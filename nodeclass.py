@@ -7,8 +7,8 @@ class node:
     a=-1
     c=-0.9
     beta=0.07
-    dt=0.05
-    noise=1.
+    dt=0.01
+    noise=1.0
     bo=5
     bth=2*math.sqrt(a*c)
     tau=1000
@@ -30,7 +30,7 @@ class node:
         for i,w in enumerate(self.n):
             soma+=nod[w].z
         soma=self.beta*soma*self.dt 
-        self.z=self.z+self.f()*self.dt+self.noise*(np.random.normal(0,.1)+np.random.normal(0,.1)*1.j)*math.sqrt(self.dt)+soma
+        self.z+=self.f()*self.dt+self.noise*(np.random.normal(0,.1)+np.random.normal(0,.1)*1.j)*math.sqrt(self.dt)+soma
         self.b+=self.db()*dt
         
 #Constructing connection network
@@ -56,18 +56,22 @@ nod=list(node(np.random.normal(0,.1)+np.random.normal(0,.1)*1.j, 2., np.random.n
 t=0
 x=[]
 d=[]
-dt=0.05
+dt=nod[0].dt
+b=[]
 k=0
-while(t<10000):
+while(t<1000):
     t+=dt
     if(t%100<dt):
         print int(t)
     map(lambda i:i.mov(), nod)
     x.append(t)
     d.append(map(lambda i:abs(i.z), nod))
-
+    b.append(map(lambda i:i.b, nod))
 
 #Graph
+m.subplot(2,1,1)
+m.plot(x,b)
+m.subplot(2,1,2)
 m.plot(x,d)
 m.show()    
 
